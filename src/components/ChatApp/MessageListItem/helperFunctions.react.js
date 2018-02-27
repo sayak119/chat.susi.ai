@@ -16,6 +16,7 @@ import { divIcon } from 'leaflet';
 import Slider from 'react-slick';
 import TickIcon from 'material-ui/svg-icons/action/done';
 import ClockIcon from 'material-ui/svg-icons/action/schedule';
+import ShareIcon from 'material-ui/svg-icons/social/share';
 import UserPreferencesStore from '../../../stores/UserPreferencesStore';
 import Parser from 'html-react-parser';
 import {Card, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -44,7 +45,7 @@ export function renderAnchor(text,link){
 export function renderMessageFooter(message,latestMsgID, isLastAction){
 
   let statusIndicator = null;
-
+  let shareMessageYou = '';
   let footerStyle = {
     display: 'block',
     float: 'left'
@@ -54,6 +55,8 @@ export function renderMessageFooter(message,latestMsgID, isLastAction){
     let indicatorStyle = {
       height:'13px'
     }
+    console.log(message.text);
+    shareMessageYou = message.text;
     statusIndicator = (
       <li className='response-time' style={footerStyle}>
         <TickIcon style={indicatorStyle}
@@ -72,7 +75,13 @@ export function renderMessageFooter(message,latestMsgID, isLastAction){
   if(message.authorName === 'SUSI'){
     footerStyle = {};
   }
-
+  let indicatorStyle = {
+    height:'13px'
+  }
+  console.log(message.text);
+  let shareMessageSUSI = message.text;
+  shareMessageSUSI = encodeURIComponent(shareMessageSUSI.trim());
+  let twitterShare = 'https://twitter.com/intent/tweet?text='+shareMessageSUSI;
   return(
     <ul>
       <li className='message-time' style={footerStyle}>
@@ -80,6 +89,13 @@ export function renderMessageFooter(message,latestMsgID, isLastAction){
         { isLastAction &&
           (<Feedback message={message} />)
         }
+      </li>
+      {statusIndicator}
+      <li className='message-time' style={footerStyle}>
+      <ShareIcon style={indicatorStyle}
+        color={UserPreferencesStore.getTheme()==='light' ? '#90a4ae' : '#7eaaaf'}
+        onClick={()=> window.open(twitterShare, '_blank')}
+        />
       </li>
       {statusIndicator}
     </ul>
